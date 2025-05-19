@@ -223,94 +223,94 @@
   <script>
     async function sendMessage() {
       const input = document.getElementById("user-input");
-      const question = input.value.trim();
-     if (!question) return;
+       const question = input.value.trim();
+       if (!question) return;
 
-     const chatBox = document.getElementById("chat-box");
+       const chatBox = document.getElementById("chat-box");
 
-     const userMsg = document.createElement("div");
-     userMsg.className = "message user";
-     userMsg.textContent = question;
-     chatBox.appendChild(userMsg);
+       const userMsg = document.createElement("div");
+       userMsg.className = "message user";
+       userMsg.textContent = question;
+       chatBox.appendChild(userMsg);
 
-     input.value = "";
-     chatBox.scrollTop = chatBox.scrollHeight;
+       input.value = "";
+       chatBox.scrollTop = chatBox.scrollHeight;
 
-     const responseMsg = document.createElement("div");
-     responseMsg.className = "message";
-     responseMsg.textContent = "曹先生思考中...";
-     chatBox.appendChild(responseMsg);
+       const responseMsg = document.createElement("div");
+       responseMsg.className = "message";
+       responseMsg.textContent = "曹先生思考中...";
+       chatBox.appendChild(responseMsg);
 
-     try {
-       const res = await fetch("https://web-production-6954e.up.railway.app/ask", {
-         method: "POST",
-         headers: { "Content-Type": "application/json" },
-         body: JSON.stringify({ question })
-       });
-
-       const data = await res.json();
-
-       if (data.content) {
-         const relatedMatches = [...data.content.matchAll(/<quick_question>\s*(.*?)\s*<\/quick_question>/gs)];
-         let mainText = data.content;
-         relatedMatches.forEach(match => {
-           mainText = mainText.replace(match[0], '');
+       try {
+         const res = await fetch("https://web-production-6954e.up.railway.app/ask", {
+           method: "POST",
+           headers: { "Content-Type": "application/json" },
+           body: JSON.stringify({ question })
          });
-         responseMsg.textContent = mainText.trim();
 
-         if (relatedMatches.length > 0) {
+         const data = await res.json();
+
+         if (data.content) {
+           const relatedMatches = [...data.content.matchAll(/<quick_question>\s*(.*?)\s*<\/quick_question>/gs)];
+           let mainText = data.content;
            relatedMatches.forEach(match => {
-             const quickQuestion = document.createElement("div");
-             quickQuestion.className = "message quick";
-             quickQuestion.textContent = '🔍 ' + match[1].trim();
-             quickQuestion.onclick = () => sendMessageWithQuestion(match[1].trim());
-             chatBox.appendChild(quickQuestion);
+             mainText = mainText.replace(match[0], '');
            });
+           responseMsg.textContent = mainText.trim();
+
+           if (relatedMatches.length > 0) {
+             relatedMatches.forEach(match => {
+               const quickQuestion = document.createElement("div");
+               quickQuestion.className = "message quick";
+               quickQuestion.textContent = '🔍 ' + match[1].trim();
+               quickQuestion.onclick = () => sendMessageWithQuestion(match[1].trim());
+               chatBox.appendChild(quickQuestion);
+             });
+           }
+         } else {
+           responseMsg.textContent = "抱歉，未能获取回答。";
          }
-       } else {
-         responseMsg.textContent = "抱歉，未能获取回答。";
+       } catch (err) {
+         responseMsg.textContent = "网络错误，请稍后重试。";
        }
-     } catch (err) {
-       responseMsg.textContent = "网络错误，请稍后重试。";
+
+       chatBox.scrollTop = chatBox.scrollHeight;
      }
 
-     chatBox.scrollTop = chatBox.scrollHeight;
-   }
+    function sendMessageWithQuestion(question) {
+      const input = document.getElementById("user-input");
+      input.value = question;
+      sendMessage();
+    }
 
-   function sendMessageWithQuestion(question) {
-     const input = document.getElementById("user-input");
-     input.value = question;
-     sendMessage();
-   }
+    document.getElementById("user-input").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
 
-   document.getElementById("user-input").addEventListener("keydown", function (e) {
-     if (e.key === "Enter") {
-       e.preventDefault();
-       sendMessage();
-     }
-   });
+    document.querySelectorAll(".message.quick").forEach(el => {
+      el.addEventListener("click", () => {
+        const question = el.textContent.replace(/^🔍\s*/, "");
+        sendMessageWithQuestion(question);
+      });
+    });
 
-   document.querySelectorAll(".message.quick").forEach(el => {
-     el.addEventListener("click", () => {
-       const question = el.textContent.replace(/^🔍\s*/, "");
-       sendMessageWithQuestion(question);
-     });
-   });
+    // 🖨打印姓名逻辑
+    document.addEventListener('DOMContentLoaded', function () {
+      const submitBtn = document.getElementById('submitBtn');
+      const unitInput = document.getElementById('unitInput');
+      const userNameDisplay = document.querySelector('.user-name-display');
 
-   // 🖨打印姓名逻辑
-   document.addEventListener('DOMContentLoaded', function () {
-     const submitBtn = document.getElementById('submitBtn');
-     const unitInput = document.getElementById('unitInput');
-     const userNameDisplay = document.querySelector('.user-name-display');
-
-     submitBtn.addEventListener('click', function () {
-       const name = unitInput.value.trim();
-       if (name) {
-         userNameDisplay.textContent = name;
-         window.print();
-       }
-     });
-   });
+      submitBtn.addEventListener('click', function () {
+        const name = unitInput.value.trim();
+        if (name) {
+          userNameDisplay.textContent = name;
+          window.print();
+        }
+      });
+    });
   </script>
 </body>
 </html>
