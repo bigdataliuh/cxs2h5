@@ -35,7 +35,7 @@
       flex-direction: column;
       justify-content: space-between;
       backdrop-filter: blur(12px);
-      background: rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 255, 0.3);
       box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
       border-radius: 20px;
     }
@@ -48,7 +48,7 @@
       padding-right: 10px;
     }
     .message {
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 255, 0.9);
       padding: 10px 14px;
       border-radius: 12px;
       word-wrap: break-word;
@@ -114,7 +114,7 @@
     }
 
     .print-btn {
-      background-color: rgba(255, 0, 0, 0.6);
+      background-color: rgba(255, 0, 0, 0, 0.6);
       color: white;
       border: none;
       border-radius: 20px;
@@ -216,6 +216,7 @@
     <button id="submitBtn" class="print-btn">敬启</button>
   </div>
 
+  <!-- 🖨打印输出区域 -->
   <div id="printArea" class="print-content">
     <div class="user-name-display"></div>
   </div>
@@ -268,19 +269,19 @@
           const relatedMatches = [...data.content.matchAll(/<quick_question>\s*(.*?)\s*<\/quick_question>/gs)];
           let mainText = data.content;
           relatedMatches.forEach(match => {
-           mainText = mainText.replace(match[0], '');
-         });
-         responseMsg.textContent = mainText.trim();
+            mainText = mainText.replace(match[0], '');
+          });
+          responseMsg.textContent = mainText.trim();
 
-         if (relatedMatches.length > 0) {
+          if (relatedMatches.length > 0) {
             relatedMatches.forEach(match => {
-             const quickQuestion = document.createElement("div");
-             quickQuestion.className = "message quick";
-             quickQuestion.textContent = '🔍 ' + match[1].trim();
-             quickQuestion.onclick = () => sendMessageWithQuestion(match[1].trim());
-             chatBox.appendChild(quickQuestion);
-           });
-         }
+              const quickQuestion = document.createElement("div");
+              quickQuestion.className = "message quick";
+              quickQuestion.textContent = '🔍 ' + match[1].trim();
+              quickQuestion.onclick = () => sendMessageWithQuestion(match[1].trim());
+              chatBox.appendChild(quickQuestion);
+            });
+          }
         } else {
           responseMsg.textContent = "抱歉，未能获取回答。";
         }
