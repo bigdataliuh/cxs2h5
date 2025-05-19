@@ -1,351 +1,316 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>曹先生智能问答-敬启版</title>
-    <style>
-        /* 设置页面为A5大小 */
-        @page {
-            size: A5;
-            margin: 0;
-        }
-        
-        body {
-            font-family: 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
-            line-height: 1.8;
-            color: #333;
-            margin: 0;
-            padding: 20px;
-            background-color: #f9f9f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: auto;
-            width: auto;
-        }
-        
-        .bg-container {
-            width: calc(148mm - 20px); /* A5宽度减去内边距 */
-            height: calc(210mm - 20px); /* A5高度减去内边距 */
-            box-sizing: border-box;
-            position: relative;
-            border: 1px solid #ddd;
-        }
-        
-        .input-section {
-            position: absolute;
-            top: 0cm; /* 距离顶部1cm */
-            right: 0cm; /* 距离右侧1cm */
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-        
-        input[type="text"] {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 20px; /* 更加圆角化 */
-            width: auto; /* 自动调整宽度 */
-            font-family: 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
-            font-size: 16px;
-            transition: border-color 0.3s ease;
-            margin-bottom: 10px;
-            writing-mode: vertical-rl; /* 文字从上到下排列 */
-            height: 80px; /* 增加输入框高度 */
-            text-align: center; /* 居中文本 */
-        }
-        
-        input[type="text"]:focus {
-            border-color: #ff6b6b;
-            outline: none;
-        }
-        
-        .vertical-button {
-            padding: 10px 20px;
-            background-color: rgba(255, 0, 0, 0.5);
-            color: white;
-            border: none;
-            border-radius: 20px; /* 更加圆角化 */
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
-            writing-mode: vertical-rl; /* 按钮文字竖版排列 */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 60px; /* 增加按钮高度 */
-        }
-        
-        .vertical-button:hover {
-            background-color: rgba(255, 0, 0, 0.7);
-        }
-        
-        .user-name-display {
-            font-weight: bold;
-            font-size: 18px;
-            color: #333;
-            writing-mode: vertical-rl; /* 竖版显示用户名称 */
-            margin-left: 10px; /* 调整显示位置 */
-        }
-        
-        @media print {
-            /* 打印时不显示输入框和按钮 */
-            .input-section {
-                display: none;
-            }
-            
-            /* 打印时显示用户名称 */
-            .user-name-display {
-                position: absolute;
-                top: 3cm;
-                right: 2cm;
-                writing-mode: vertical-rl;
-            }
-            
-            /* 避免分页 */
-            .bg-container {
-                page-break-after: avoid;
-            }
-            
-            /* 设置打印区域 */
-            body, .bg-container {
-                margin: 0;
-                padding: 0;
-            }
-        }
-        
-        /* 聊天界面样式 */
-        .video-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            object-fit: cover;
-            z-index: -1;
-        }
-        
-        .chat-container {
-            position: absolute;
-            top: 17vh;
-            right: 7vw;
-            height: 76vh;
-            width: 50vw;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            backdrop-filter: blur(12px);
-            background: rgba(255, 255, 255, 0.3);
-            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
-            border-radius: 20px;
-        }
-        
-        .messages {
-            flex: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            padding-right: 10px;
-        }
-        
-        .message {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 10px 14px;
-            border-radius: 12px;
-            word-wrap: break-word;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-            max-width: 90%;
-            white-space: pre-wrap;
-            text-indent: 2em;
-        }
-        
-        .message.user {
-            background-color: #397eff;
-            color: white;
-            align-self: flex-end;
-            max-width: fit-content;
-            text-indent: 0;
-        }
-        
-        .message.quick {
-            cursor: pointer;
-        }
-        
-        .input-area {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            padding-top: 10px;
-        }
-        
-        .input-area input {
-            flex: 1;
-            padding: 12px;
-            font-size: 16px;
-            border-radius: 999px;
-            border: none;
-            outline: none;
-        }
-        
-        .input-area button {
-            padding: 10px 18px;
-            border: none;
-            border-radius: 999px;
-            background-color: #d4237a;
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>曹先生智能问答-敬启版</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow: hidden;
+    }
+    .video-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: -1;
+    }
+    .chat-container {
+      position: absolute;
+      top: 17vh;
+      right: 7vw;
+      height: 76vh;
+      width: 50vw;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+      border-radius: 20px;
+    }
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-right: 10px;
+    }
+    .message {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 10px 14px;
+      border-radius: 12px;
+      word-wrap: break-word;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      max-width: 90%;
+      white-space: pre-wrap;
+      text-indent: 2em;
+    }
+    .message.user {
+      background-color: #397eff;
+      color: white;
+      align-self: flex-end;
+      max-width: fit-content;
+      text-indent: 0;
+    }
+    .message.quick {
+      cursor: pointer;
+    }
+    .input-area {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding-top: 10px;
+    }
+    .input-area input {
+      flex: 1;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 999px;
+      border: none;
+      outline: none;
+    }
+    .input-area button {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 999px;
+      background-color: #d4237a;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    /* 🔻打印按钮区域 */
+    .print-section {
+      position: fixed;
+      bottom: 10vh;
+      left: 35vw;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      z-index: 99;
+    }
+
+    #unitInput {
+      padding: 8px 12px;
+      border: 1px solid #ccc;
+      border-radius: 20px;
+      writing-mode: vertical-rl;
+      height: 80px;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .print-btn {
+      background-color: rgba(255, 0, 0, 0.6);
+      color: white;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      padding: 10px;
+      writing-mode: vertical-rl;
+      height: 60px;
+    }
+
+    @media print {
+      @page {
+        size: A5;
+        margin: 0;
+      }
+
+      body * {
+        display: none;
+      }
+
+      .print-content {
+        display: block;
+        width: calc(148mm - 20px);
+        height: calc(210mm - 20px);
+        margin: 10px auto;
+        border: 1px solid #ddd;
+        box-sizing: border-box;
+        position: relative;
+      }
+
+      .user-name-display {
+        position: absolute;
+        top: 3cm;
+        right: 2cm;
+        font-size: 18px;
+        font-weight: bold;
+        writing-mode: vertical-rl;
+      }
+    }
+
+    /* 📱响应式适配 */
+    @media (max-width: 1024px) {
+      .chat-container {
+        width: 90vw;
+        right: 5vw;
+        top: 12vh;
+        height: 76vh;
+        padding: 16px;
+      }
+    }
+    @media (max-width: 600px) {
+      .chat-container {
+        width: 96vw;
+        right: 2vw;
+        top: 8vh;
+        height: 82vh;
+        padding: 12px;
+      }
+      .message {
+        font-size: 13px;
+        text-indent: 1.5em;
+      }
+      .input-area {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+      }
+      .input-area input,
+      .input-area button {
+        width: 100%;
+        font-size: 13px;
+        padding: 10px;
+        border-radius: 12px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="bg-container">
-        <div class="input-section">
-            <input type="text" id="unitInput" placeholder="请告诉我，怎么称呼您？">
-            <button id="submitBtn" class="vertical-button">敬启</button>
-        </div>
+  <video class="video-bg" src="video.mov" autoplay muted loop></video>
+
+  <div class="chat-container">
+    <div class="messages" id="chat-box">
+      <div class="message">您好，请叫我曹先生</div>
+      <div class="message quick">🔍红楼梦中有哪些美食？</div>
+      <div class="message quick">🔍红楼梦中有哪些判词？</div>
+      <div class="message quick">🔍红楼梦中有哪些故事？</div>
+      <div class="message quick">🔍大梦·红楼有哪些值得一看的亮点？</div>
+      <div class="message quick">🔍大梦·红楼和其他红楼梦演出有哪些不同？</div>
+      <div class="message quick">🔍你是曹雪芹吗？你是如何AI重生的？</div>
     </div>
-    
-    <video class="video-bg" src="video.mov" autoplay muted loop></video>
-
-    <div class="chat-container">
-        <div class="messages" id="chat-box">
-            <div class="message">您好，请叫我曹先生</div>
-            <div class="message quick">🔍红楼梦中有哪些美食？</div>
-            <div class="message quick">🔍红楼梦中有哪些判词？</div>
-            <div class="message quick">🔍红楼梦中有哪些故事？</div>
-            <div class="message quick">🔍大梦·红楼有哪些值得一看的亮点？</div>
-            <div class="message quick">🔍大梦·红楼和其他红楼梦演出有哪些不同？</div>
-            <div class="message quick">🔍你是曹雪芹吗？你是如何AI重生的？</div>
-        </div>
-        <div class="input-area">
-            <input type="text" id="user-input" placeholder="请输入问题，点击发送" />
-            <button onclick="sendMessage()">发送</button>
-        </div>
+    <div class="input-area">
+      <input type="text" id="user-input" placeholder="请输入问题，点击发送" />
+      <button onclick="sendMessage()">发送</button>
     </div>
+  </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // 获取页面元素
-            const submitBtn = document.getElementById('submitBtn');
-            const unitInput = document.getElementById('unitInput');
-            const bgContainer = document.querySelector('.bg-container');
-            
-            // 动态调整输入框宽度
-            unitInput.addEventListener('input', function() {
-                // 调整输入框宽度与字符宽度一致
-                this.style.width = (this.value.length * 16) + 'px'; // 16px是字体大小
-            });
-            
-            // 提交按钮逻辑
-            submitBtn.addEventListener('click', function() {
-                if (unitInput.value.trim() !== '') {
-                    // 获取输入框的父元素
-                    const inputSection = document.querySelector('.input-section');
-                    
-                    // 创建一个新的div来显示用户名称
-                    const userDisplay = document.createElement('div');
-                    userDisplay.className = 'user-name-display';
-                    userDisplay.innerHTML = unitInput.value;
-                    userDisplay.style.position = 'absolute';
-                    userDisplay.style.top = '3cm';
-                    userDisplay.style.right = '2cm';
-                    
-                    // 隐藏输入框和按钮
-                    inputSection.style.display = 'none';
-                    
-                    // 添加到页面
-                    bgContainer.appendChild(userDisplay);
-                    
-                    // 触发打印
-                    window.print();
-                    
-                    // 打印后刷新页面以重置状态
-                    setTimeout(function() {
-                        location.reload();
-                    }, 100);
-                }
-            });
-        });
+  <!-- 🟥打印功能区 -->
+  <div class="print-section">
+    <input type="text" id="unitInput" placeholder="输入姓名">
+    <button id="submitBtn" class="print-btn">敬启</button>
+  </div>
 
-        async function sendMessage() {
-            const input = document.getElementById("user-input");
-            const question = input.value.trim();
-            if (!question) return;
+  <div id="printArea" class="print-content">
+    <div class="user-name-display"></div>
+  </div>
 
-            const chatBox = document.getElementById("chat-box");
+  <script>
+    async function sendMessage() {
+      const input = document.getElementById("user-input");
+      const question = input.value.trim();
+     if (!question) return;
 
-            const userMsg = document.createElement("div");
-            userMsg.className = "message user";
-            userMsg.textContent = question;
-            chatBox.appendChild(userMsg);
+     const chatBox = document.getElementById("chat-box");
 
-            input.value = "";
-            chatBox.scrollTop = chatBox.scrollHeight;
+     const userMsg = document.createElement("div");
+     userMsg.className = "message user";
+     userMsg.textContent = question;
+     chatBox.appendChild(userMsg);
 
-            const responseMsg = document.createElement("div");
-            responseMsg.className = "message";
-            responseMsg.textContent = "曹先生思考中...";
-            chatBox.appendChild(responseMsg);
+     input.value = "";
+     chatBox.scrollTop = chatBox.scrollHeight;
 
-            try {
-                const res = await fetch("https://web-production-6954e.up.railway.app/ask", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ question })
-                });
+     const responseMsg = document.createElement("div");
+     responseMsg.className = "message";
+     responseMsg.textContent = "曹先生思考中...";
+     chatBox.appendChild(responseMsg);
 
-                const data = await res.json();
+     try {
+       const res = await fetch("https://web-production-6954e.up.railway.app/ask", {
+         method: "POST",
+         headers: { "Content-Type": "application/json" },
+         body: JSON.stringify({ question })
+       });
 
-                if (data.content) {
-                    const relatedMatches = [...data.content.matchAll(/<quick_question>\s*(.*?)\s*<\/quick_question>/gs)];
-                    let mainText = data.content;
-                    relatedMatches.forEach(match => {
-                        mainText = mainText.replace(match[0], '');
-                    });
-                    responseMsg.textContent = mainText.trim();
+       const data = await res.json();
 
-                    if (relatedMatches.length > 0) {
-                        relatedMatches.forEach(match => {
-                            const quickQuestion = document.createElement("div");
-                            quickQuestion.className = "message quick";
-                            quickQuestion.textContent = '🔍 ' + match[1].trim();
-                            quickQuestion.onclick = () => sendMessageWithQuestion(match[1].trim());
-                            chatBox.appendChild(quickQuestion);
-                        });
-                    }
-                } else {
-                    responseMsg.textContent = "抱歉，未能获取回答。";
-                }
-            } catch (err) {
-                responseMsg.textContent = "网络错误，请稍后重试。";
-            }
+       if (data.content) {
+         const relatedMatches = [...data.content.matchAll(/<quick_question>\s*(.*?)\s*<\/quick_question>/gs)];
+         let mainText = data.content;
+         relatedMatches.forEach(match => {
+           mainText = mainText.replace(match[0], '');
+         });
+         responseMsg.textContent = mainText.trim();
 
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
+         if (relatedMatches.length > 0) {
+           relatedMatches.forEach(match => {
+             const quickQuestion = document.createElement("div");
+             quickQuestion.className = "message quick";
+             quickQuestion.textContent = '🔍 ' + match[1].trim();
+             quickQuestion.onclick = () => sendMessageWithQuestion(match[1].trim());
+             chatBox.appendChild(quickQuestion);
+           });
+         }
+       } else {
+         responseMsg.textContent = "抱歉，未能获取回答。";
+       }
+     } catch (err) {
+       responseMsg.textContent = "网络错误，请稍后重试。";
+     }
 
-        function sendMessageWithQuestion(question) {
-            const input = document.getElementById("user-input");
-            input.value = question;
-            sendMessage();
-        }
+     chatBox.scrollTop = chatBox.scrollHeight;
+   }
 
-        document.getElementById("user-input").addEventListener("keydown", function (e) {
-            if (e.key === "Enter") {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
+   function sendMessageWithQuestion(question) {
+     const input = document.getElementById("user-input");
+     input.value = question;
+     sendMessage();
+   }
 
-        document.querySelectorAll(".message.quick").forEach(el => {
-            el.addEventListener("click", () => {
-                const question = el.textContent.replace(/^🔍\s*/, "");
-                sendMessageWithQuestion(question);
-            });
-        });
-    </script>
+   document.getElementById("user-input").addEventListener("keydown", function (e) {
+     if (e.key === "Enter") {
+       e.preventDefault();
+       sendMessage();
+     }
+   });
+
+   document.querySelectorAll(".message.quick").forEach(el => {
+     el.addEventListener("click", () => {
+       const question = el.textContent.replace(/^🔍\s*/, "");
+       sendMessageWithQuestion(question);
+     });
+   });
+
+   // 🖨打印姓名逻辑
+   document.addEventListener('DOMContentLoaded', function () {
+     const submitBtn = document.getElementById('submitBtn');
+     const unitInput = document.getElementById('unitInput');
+     const userNameDisplay = document.querySelector('.user-name-display');
+
+     submitBtn.addEventListener('click', function () {
+       const name = unitInput.value.trim();
+       if (name) {
+         userNameDisplay.textContent = name;
+         window.print();
+       }
+     });
+   });
+  </script>
 </body>
 </html>
