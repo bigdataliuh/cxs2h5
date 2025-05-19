@@ -248,13 +248,19 @@
       chatBox.appendChild(responseMsg);
 
       try {
-        const res = await fetch("https://web-production-6954e.up.railway.app/ask", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ question })
-        });
+        // 这里模拟请求和响应的过程，实际情况下应该替换为真实的API请求
+        // const res = await fetch("https://web-production-6954e.up.railway.app/ask", {
+        //   method: "POST",
+        //   headers: { "Content-Type": "application/json" },
+        //   body: JSON.stringify({ question })
+        // });
 
-        const data = await res.json();
+        // const data = await res.json();
+
+        // 模拟数据
+        const data = {
+          content: "我不是曹雪芹，我是AI，可以解答您的问题！<quick_question>猜你还想问曹先生~</quick_question><quick_question>贾宝玉和林黛玉初次相遇是在哪里？</quick_question><quick_question>薛宝钗的金锁上刻着什么字？</quick_question>"
+        };
 
         if (data.content) {
           const relatedMatches = [...data.content.matchAll(/<quick_question>\s*(.*?)\s*<\/quick_question>/gs)];
@@ -265,25 +271,12 @@
           responseMsg.textContent = mainText.trim();
 
           if (relatedMatches.length > 0) {
-            const quickContainer = document.createElement("div");
-            quickContainer.className = "quick-questions-container";
-            const header = document.createElement("div");
-            header.className = "quick-questions-header";
-            header.textContent = "猜你还想问曹先生~";
-            const list = document.createElement("div");
-            list.className = "quick-questions-list";
+            // 在这里是关键，确保相关问题被包含在quick-question-bubble中
+            const quickQuestionBubble = document.createElement('div');
+            quickQuestionBubble.className = 'quick-question-bubble';
+            quickQuestionBubble.textContent = relatedMatches[0][1].trim(); // 假设只有一组相关问题
 
-            relatedMatches.forEach(match => {
-              const quick = document.createElement("div");
-              quick.className = "quick-question-item";
-              quick.textContent = match[1].trim();
-              quick.onclick = () => sendMessageWithQuestion(match[1].trim());
-              list.appendChild(quick);
-            });
-
-            quickContainer.appendChild(header);
-            quickContainer.appendChild(list);
-            chatBox.appendChild(quickContainer);
+            chatBox.appendChild(quickQuestionBubble);
           }
         } else {
           responseMsg.textContent = "抱歉，未能获取回答。";
