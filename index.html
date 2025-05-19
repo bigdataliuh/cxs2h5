@@ -91,7 +91,7 @@
       font-weight: bold;
     }
 
-    /* 🔻打印按钮区域 */
+    /* 打印功能区 */
     .print-section {
       position: fixed;
       bottom: 10vh;
@@ -102,7 +102,6 @@
       gap: 8px;
       z-index: 99;
     }
-
     #unitInput {
       padding: 8px 12px;
       border: 1px solid #ccc;
@@ -112,9 +111,8 @@
       font-size: 14px;
       text-align: center;
     }
-
     .print-btn {
-      background-color: rgba(255, 0, 0, 0, 0.6);
+      background-color: rgba(255, 0, 0, 0.6);
       color: white;
       border: none;
       border-radius: 20px;
@@ -124,37 +122,7 @@
       height: 60px;
     }
 
-    @media print {
-      @page {
-        size: A5;
-        margin: 0;
-      }
-
-      body * {
-        display: none;
-      }
-
-      .print-content {
-        display: block;
-        width: calc(148mm - 20px);
-        height: calc(210mm - 20px);
-        margin: 10px auto;
-        border: 1px solid #ddd;
-        box-sizing: border-box;
-        position: relative;
-      }
-
-      .user-name-display {
-        position: absolute;
-        top: 3cm;
-        right: 2cm;
-        font-size: 18px;
-        font-weight: bold;
-        writing-mode: vertical-rl;
-      }
-    }
-
-    /* 📱响应式适配 */
+    /* 响应式适配 */
     @media (max-width: 1024px) {
       .chat-container {
         width: 90vw;
@@ -162,6 +130,9 @@
         top: 12vh;
         height: 76vh;
         padding: 16px;
+      }
+      .print-section {
+        left: 30vw;
       }
     }
     @media (max-width: 600px) {
@@ -188,6 +159,35 @@
         padding: 10px;
         border-radius: 12px;
       }
+      .print-section {
+        left: 25vw;
+        bottom: 8vh;
+      }
+    }
+
+    /* 打印专用样式 */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #printArea,
+      #printArea * {
+        visibility: visible !important;
+        display: block !important;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+      .print-name {
+        top: 3cm !important;
+        right: 2cm !important;
+      }
+    }
+    @page {
+      size: A5;
+      margin: 0;
     }
   </style>
 </head>
@@ -210,32 +210,46 @@
     </div>
   </div>
 
-  <!-- 🟥打印功能区 -->
+  <!-- 打印功能区 -->
   <div class="print-section">
     <input type="text" id="unitInput" placeholder="输入姓名">
     <button id="submitBtn" class="print-btn">敬启</button>
   </div>
 
-  <!-- 🖨打印输出区域 -->
-  <div id="printArea" class="print-content">
-    <div class="user-name-display"></div>
+  <!-- 打印输出区域 -->
+  <div id="printArea" style="display: none;">
+    <div class="print-name" style="
+      position: absolute;
+      top: 3cm;
+      right: 2cm;
+      writing-mode: vertical-rl;
+      font-size: 24px;
+      font-weight: bold;
+      font-family: 'SimSun', serif;
+    "></div>
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const submitBtn = document.getElementById('submitBtn');
-      const unitInput = document.getElementById('unitInput');
-      const userNameDisplay = document.querySelector('.user-name-display');
-
-      submitBtn.addEventListener('click', function () {
-        const name = unitInput.value.trim();
-        if (name) {
-          userNameDisplay.textContent = name;
-          window.print();
-        }
-      });
+    // 打印功能
+    document.getElementById('submitBtn').addEventListener('click', function() {
+      const name = document.getElementById('unitInput').value.trim();
+      if (!name) return;
+      
+      const printEl = document.querySelector('.print-name');
+      printEl.textContent = name;
+      
+      const printArea = document.getElementById('printArea');
+      printArea.style.display = 'block';
+      
+      setTimeout(() => {
+        window.print();
+        setTimeout(() => {
+          printArea.style.display = 'none';
+        }, 100);
+      }, 100);
     });
 
+    // 原有聊天功能
     async function sendMessage() {
       const input = document.getElementById("user-input");
       const question = input.value.trim();
@@ -261,19 +275,19 @@
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ question })
-       });
+        });
 
-       const data = await res.json();
+        const data = await res.json();
 
-       if (data.content) {
-         const relatedMatches = [...data.content.matchAll(/<quick_question>\s*(.*?)\s*<\/quick_question>/gs)];
-         let mainText = data.content;
-         relatedMatches.forEach(match => {
-           mainText = mainText.replace(match[0], '');
-         });
-         responseMsg.textContent = mainText.trim();
+        if (data.content) {
+          const relatedMatches = [...data.content.matchAll(/<quick_question>\s*(.*?)\s*<\/quick_question>/gs)];
+          let mainText = data.content;
+          relatedMatches.forEach(match => {
+            mainText = mainText.replace(match[0], '');
+          });
+          responseMsg.textContent = mainText.trim();
 
-         if (relatedMatches.length > 0) {
+          if (relatedMatches.length > 0) {
             relatedMatches.forEach(match => {
               const quickQuestion = document.createElement("div");
               quickQuestion.className = "message quick";
