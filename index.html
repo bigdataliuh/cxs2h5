@@ -213,12 +213,12 @@
   <div class="chat-container">
     <div class="messages" id="chat-box">
       <div class="message">您好，请叫我曹先生</div>
+      <div class="message quick">🔍你是曹雪芹吗？你是如何AI重生的？</div>
       <div class="message quick">🔍红楼梦中有哪些美食？</div>
       <div class="message quick">🔍红楼梦中有哪些判词？</div>
       <div class="message quick">🔍红楼梦中有哪些事件？</div>
       <div class="message quick">🔍大梦·红楼有哪些值得一看的亮点？</div>
       <div class="message quick">🔍大梦·红楼和其他红楼梦演出有哪些不同？</div>
-      <div class="message quick">🔍你是曹雪芹吗？你是如何AI重生的？</div>
     </div>
     <div class="input-area">
       <input type="text" id="user-input" placeholder="请输入问题，点击发送" />
@@ -275,7 +275,7 @@
 
       const responseMsg = document.createElement("div");
       responseMsg.className = "message";
-      responseMsg.textContent = "曹先生思考中...";
+      responseMsg.textContent = "请稍等～曹先生正在思考中...";
       chatBox.appendChild(responseMsg);
 
       try {
